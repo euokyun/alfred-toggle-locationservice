@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bundleid</key>
+	<string>com.euokyun.togglels</string>
+	<key>category</key>
+	<string>Tools</string>
+	<key>connections</key>
+	<dict>
+		<key>D6065C97-5E18-4330-9188-8710131EC2ED</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>E7E55FE6-006B-4449-B057-0B80AA7CA52D</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+	</dict>
+	<key>createdby</key>
+	<string>euokyun</string>
+	<key>description</key>
+	<string>Toggle MacOS Location Service</string>
+	<key>disabled</key>
+	<false/>
+	<key>name</key>
+	<string>toggle Location Setting</string>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>2</integer>
+				<key>keyword</key>
+				<string>loc</string>
+				<key>subtext</key>
+				<string>change location setting</string>
+				<key>text</key>
+				<string>toggle Location Setting</string>
+				<key>withspace</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.keyword</string>
+			<key>uid</key>
+			<string>D6065C97-5E18-4330-9188-8710131EC2ED</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>script</key>
+				<string>osascript -l JavaScript "toggle.jxa"</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string>toggle.jxa</string>
+				<key>type</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>E7E55FE6-006B-4449-B057-0B80AA7CA52D</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+	</array>
+	<key>readme</key>
+	<string>if you don't want authorize everytime, simply run this command in terminal
+
+security add-generic-password -a ${USER} -s togglels -w "TYPE_YOUR_PASSWORD"
+
+your password will be saved in keychain.
+
+if you don't want store your password in keychain, then
+
+security delete-generic-password -s togglels
+
+and it will be removed.
+
+tested on MacOS 11.4 (Big Sur)</string>
+	<key>uidata</key>
+	<dict>
+		<key>D6065C97-5E18-4330-9188-8710131EC2ED</key>
+		<dict>
+			<key>xpos</key>
+			<integer>25</integer>
+			<key>ypos</key>
+			<integer>55</integer>
+		</dict>
+		<key>E7E55FE6-006B-4449-B057-0B80AA7CA52D</key>
+		<dict>
+			<key>xpos</key>
+			<integer>265</integer>
+			<key>ypos</key>
+			<integer>55</integer>
+		</dict>
+	</dict>
+	<key>version</key>
+	<string></string>
+	<key>webaddress</key>
+	<string></string>
+</dict>
+</plist>

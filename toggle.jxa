@@ -1,0 +1,77 @@
+const MAXTRY = 10; // 1 = 0.1 seconds
+
+
+const app = Application.currentApplication();
+app.includeStandardAdditions = true;
+
+function findPassword() {
+    try {
+        return app.doShellScript("security find-generic-password -a ${USER} -s togglels -w");
+    } catch(e) {
+        return app.displayDialog("Please Type Your Password", {
+            defaultAnswer: "",
+            hiddenAnswer: true,
+            // withIcon: "Location Services",
+            buttons: ["Cancel", "Unlock"],
+            defaultButton: "Unlock"
+        }).textReturned;
+    }
+}
+
+const PASSWORD = findPassword();
+
+
+const sys = Application('System Events');
+const prefs = Application("System Preferences");
+const prefsproc = sys.applicationProcesses["System Preferences"];
+const sns = prefsproc.windows["Security & Privacy"];
+const pane = prefs.panes.byId("com.apple.preference.security");
+
+function repeat(repeatFunc) {
+    this._repeater = repeatFunc;
+    this._status = undefined;
+    
+    function waitFor(target) {
+        for (let i = 0; i < 10; i++) {
+            try {
+                if (target()) {
+                    this._status = true;
+                    break;
+                } else delay(0.1);
+                repeatFunc();
+            } catch (error) {}
+        }
+        return this;
+    }
+    
+    function then(onsuccess) {
+        if (this._status) onsuccess();
+        return this;
+    }
+    function onError(onfailed) {
+        if (!this._status) onfailed();
+        return this;
+    }
+    return {
+        waitFor: waitFor,
+        then: then,
+        onError: onError
+    }
+}
+
+repeat(()=>pane.anchors.byName("Privacy_LocationServices")
+    .reveal()).waitFor(()=>sns.exists())
+    .then(()=>{prefs.activate(); pane.authorize();});
+repeat(()=>{
+        if (PASSWORD.length===sns.sheets[0].textFields[0].value().length) 
+            sns.sheets[0].buttons[1].click(); 
+        else sns.sheets[0].textFields[0].value=PASSWORD;})
+    .waitFor(()=>sns.tabGroups[0].groups[0].checkboxes[0].enabled())
+    .then(()=>{
+        let prevVal = sns.tabGroups[0].groups[0].checkboxes[0].value();
+        sns.tabGroups[0].groups[0].checkboxes[0].click();
+        if (prevVal===1) repeat(()=>sns.sheets[0].buttons[1].click()).waitFor(()=>!sns.sheets[0].exists());
+    });
+
+//force quit
+app.doShellScript("kill -9 "+ prefsproc.unixId());
